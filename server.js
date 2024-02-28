@@ -5,6 +5,9 @@ const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT;
+// Database
+const connectDB = require("./config/database");
+connectDB();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

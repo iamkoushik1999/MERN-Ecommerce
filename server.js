@@ -14,7 +14,4 @@ app.use(cors("*"));
 // Test Route
 app.get("/", (req, res) => res.send("Server Running Successfully!"));
 
-
-app.listen(PORT, () =>
-  console.log(`Server Running on port ${PORT}!`.cyan)
-);
+app.listen(PORT, () => console.log(`Server Running on port ${PORT}!`.cyan));

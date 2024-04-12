@@ -4,7 +4,7 @@ require("colors");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const app = express();
-const PORT = process.env.PORT;
+const { PORT, NODE_ENV } = process.env;
 // Database
 const connectDB = require("./config/database");
 connectDB();
@@ -16,11 +16,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors("*"));
 
-// Test Route
-app.get("/", (req, res) => res.send("Server Running Successfully!"));
-
 // Middlewares
 
 app.use(errorHandler);
 
-app.listen(PORT, () => console.log(`Server Running on port ${PORT}!`.cyan));
+// Test Route
+app.get("/", (req, res) => {
+  res.send(`Server is running successfully ${NODE_ENV}`);
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is listening on ${PORT} on ${NODE_ENV}`.cyan);
+});

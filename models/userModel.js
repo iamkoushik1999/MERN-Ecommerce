@@ -7,15 +7,22 @@ const userSchema = mongoose.Schema(
     },
     username: {
       type: String,
+      unique: true,
     },
     email: {
       type: String,
+      unique: true,
     },
     phoneNumber: {
       type: String,
+      unique: true,
     },
     password: {
       type: String,
+    },
+    image: {
+      type: String,
+      default: "",
     },
     role: {
       type: String,
@@ -23,10 +30,6 @@ const userSchema = mongoose.Schema(
     approve: {
       type: Boolean,
       default: false,
-    },
-    discount: {
-      type: String,
-      default: "0%",
     },
     address: [
       {

@@ -10,6 +10,7 @@ const connectDB = require("./config/database");
 connectDB();
 // Imports
 const errorHandler = require("./middleware/errorMiddleware");
+const authRoutes = require("./routes/authRoutes");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -17,7 +18,7 @@ app.use(cookieParser());
 app.use(cors("*"));
 
 // Middlewares
-
+app.use("/api/v1", authRoutes);
 app.use(errorHandler);
 
 // Test Route

@@ -53,6 +53,18 @@ exports.signup = asyncHandler(async (req, res) => {
       throw new Error("Email already exists");
     }
   }
+  // Phone Number Validation
+  if (phoneNumber) {
+    if (phoneNumber.length < 10) {
+      res.status(400);
+      throw new Error("Enter a valid 10 digit Phone Number");
+    }
+    const phoneNumberExists = await userModel.findOne({ phoneNumber });
+    if (phoneNumberExists) {
+      res.status(400);
+      throw new Error("Phone Number already exists");
+    }
+  }
 
   const bcryptPassword = await bcrypt.hash(password, 10);
 

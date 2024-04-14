@@ -1,6 +1,7 @@
 // Packages
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
+const validator = require("validator");
 // Model
 const userModel = require("../models/userModel");
 // Utilities
@@ -65,7 +66,53 @@ exports.signup = asyncHandler(async (req, res) => {
       throw new Error("Phone Number already exists");
     }
   }
+  // Password Validation
+  if (password) {
+    if (password !== confirmPassword) {
+      res.status(401);
+      throw new Error("Password and Confirm Password should match");
+    }
 
+    const minLength = validator.isStrongPassword(password, [{ minLength: 6 }]);
+
+    const minLowercase = validator.isStrongPassword(password, [
+      { minLowercase: 1 },
+    ]);
+
+    const minUppercase = validator.isStrongPassword(password, [
+      { minUppercase: 1 },
+    ]);
+
+    const minNumbers = validator.isStrongPassword(password, [
+      { minNumbers: 1 },
+    ]);
+
+    const minSymbols = validator.isStrongPassword(password, [
+      { minSymbols: 1 },
+    ]);
+
+    if (!minLength) {
+      res.status(400);
+      throw new Error("Password must be minimum of 6 characters");
+    }
+    if (!minLowercase) {
+      res.status(400);
+      throw new Error("Password should contain 1 lower case character");
+    }
+    if (!minUppercase) {
+      res.status(400);
+      throw new Error("Password should contain 1 upper case character");
+    }
+    if (!minNumbers) {
+      res.status(400);
+      throw new Error("Password should contain 1 number");
+    }
+    if (!minSymbols) {
+      res.status(400);
+      throw new Error("Password should contain 1 symbol");
+    }
+  }
+  // Encrypt Password
   const bcryptPassword = await bcrypt.hash(password, 10);
 
   try {

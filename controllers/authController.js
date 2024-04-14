@@ -40,6 +40,19 @@ exports.signup = asyncHandler(async (req, res) => {
       throw new Error("Username already exists");
     }
   }
+  // Email Validation
+  if (email) {
+    const isEmail = validator.isEmail(email);
+    if (!isEmail) {
+      res.status(400);
+      throw new Error("Please enter valid email");
+    }
+    const emailExists = await userModel.findOne({ email });
+    if (emailExists) {
+      res.status(400);
+      throw new Error("Email already exists");
+    }
+  }
 
   const bcryptPassword = await bcrypt.hash(password, 10);
 

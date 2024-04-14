@@ -1,6 +1,9 @@
+// Packages
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
+// Model
 const userModel = require("../models/userModel");
+// Utilities
 
 // ------------------------------------------------------------------------------------------------------------
 
@@ -11,6 +14,31 @@ exports.signup = asyncHandler(async (req, res) => {
   if (!username || !email || !phoneNumber || !password || !confirmPassword) {
     res.status(400);
     throw new Error("Please fill all the fields");
+  }
+
+  // Username Validation
+  if (username) {
+    if (username.length < 5 || username.length > 20) {
+      res.status(400);
+      throw new Error("Username must be between 5 to 20 characters");
+    }
+    if (username.includes(" ")) {
+      res.status(400);
+      throw new Error("Username cannot have a space");
+    }
+    if (username !== username.toLowerCase()) {
+      res.status(400);
+      throw new Error("Username must be in lowercase");
+    }
+    if (!username.match(/^[a-zA-Z0-9]/)) {
+      res.status(400);
+      throw new Error("Username can only contain letters and numbers");
+    }
+    const usernameExists = await userModel.findOne({ username });
+    if (usernameExists) {
+      res.status(400);
+      throw new Error("Username already exists");
+    }
   }
 
   const bcryptPassword = await bcrypt.hash(password, 10);

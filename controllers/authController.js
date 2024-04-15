@@ -6,14 +6,23 @@ const jwt = require("jsonwebtoken");
 // Model
 const userModel = require("../models/userModel");
 // Utilities
+const cloudinary = require("../utilities/cloudinary");
 
 // ------------------------------------------------------------------------------------------------------------
 
 // Sign Up
 exports.signup = asyncHandler(async (req, res) => {
   const { username, email, phoneNumber, password, confirmPassword } = req.body;
+  const image = await cloudinary.uploadFile(req.file);
 
-  if (!username || !email || !phoneNumber || !password || !confirmPassword) {
+  if (
+    !username ||
+    !email ||
+    !phoneNumber ||
+    !password ||
+    !confirmPassword ||
+    !image
+  ) {
     res.status(400);
     throw new Error("Please fill all the fields");
   }
@@ -122,6 +131,7 @@ exports.signup = asyncHandler(async (req, res) => {
       email,
       phoneNumber,
       password: bcryptPassword,
+      image,
     });
 
     res.status(201).json({ message: "User signed up successfully", userData });

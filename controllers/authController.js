@@ -165,3 +165,17 @@ exports.login = asyncHandler(async (req, res) => {
     // })
     .json({ message: "Logged In Successfully" });
 });
+
+// Profile
+exports.profile = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+
+  const user = await userModel.findById(_id).lean();
+  if (!user) {
+    res.status(404);
+    throw new Error("Invalid User");
+  }
+  const { password, ...userData } = user;
+
+  res.status(200).json({ userData });
+});

@@ -2,6 +2,7 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
+const jwt = require("jsonwebtoken");
 // Model
 const userModel = require("../models/userModel");
 // Utilities
@@ -128,4 +129,39 @@ exports.signup = asyncHandler(async (req, res) => {
     res.status(500);
     throw new Error(error);
   }
+});
+
+// Login
+exports.login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    res.status(400);
+    throw new Error("Please fill all the fields");
+  }
+
+  const user = await userModel.findOne({
+    $or: [{ email: email }, { username: email }, { phoneNumber: email }],
+  });
+  if (!user) {
+    res.status(400);
+    throw new Error("Invalid Credentials");
+  }
+
+  const comparePassword = await bcrypt.compare(password, user.password);
+  if (!comparePassword) {
+    res.status(400);
+    throw new Error("Invalid Credentials");
+  }
+
+  const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+    expiresIn: "1d",
+  });
+
+  res
+    .status(200)
+    .cookie("access_token", token)
+    // .cookie("access_token", token, {
+    //   httpOnly: true,
+    // })
+    .json({ message: "Logged In Successfully" });
 });

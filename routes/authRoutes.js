@@ -8,6 +8,7 @@ const {
   updatePassword,
   addAddress,
   editAddress,
+  deleteAddress,
 } = require("../controllers/authController");
 // Middleware
 const { isAuth } = require("../middleware/authMiddleware");
@@ -42,5 +43,11 @@ router.route("/profile/update/address").post(isAuth, addAddress);
 // Edit Address
 // PUT
 router.route("/profile/update/address/:address_id").put(isAuth, editAddress);
+
+// Delete Address
+// DELETE
+router
+  .route("/profile/update/address/:address_id")
+  .delete(isAuth, deleteAddress);
 
 module.exports = router;

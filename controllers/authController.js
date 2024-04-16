@@ -463,3 +463,33 @@ exports.editAddress = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
+// Delete Address
+// DELETE
+exports.deleteAddress = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { address_id } = req.params;
+
+  try {
+    // Finding the user
+    const user = await userModel.findById(_id);
+    // Finding the address to delete
+    const address = user.address.find((ele) => ele._id == address_id);
+    if (!address) {
+      res.status(404);
+      throw new Error("No address found");
+    }
+    // Deleting the address
+    await userModel.updateOne(
+      { _id: _id },
+      {
+        $pull: { address: { _id: address_id } },
+      }
+    );
+
+    res.status(200).json({ message: "Address Removed Successfully" });
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
+  }
+});

@@ -13,10 +13,24 @@ const { upload } = require("../middleware/multerMiddleware");
 
 // ------------------------------------------------
 
+// Sign Up
+// POST
 router.route("/signup").post(upload.single("image"), signup);
+
+// Login
+// POST
 router.route("/login").post(login);
+
+// View Profile
+// GET
 router.route("/profile").get(isAuth, profile);
+
+// Edit Profile
+// PUT
 router.route("/profile/update").put(isAuth, updateProfile);
+
+// Edit Password
+// PUT
 router.route("/profile/update/password").put(isAuth, updatePassword);
 
 module.exports = router;

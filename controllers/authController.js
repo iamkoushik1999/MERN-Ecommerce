@@ -12,6 +12,7 @@ const cloudinary = require("../utilities/cloudinary");
 // ------------------------------------------------------------------------------------------------------------
 
 // Sign Up
+// POST
 exports.signup = asyncHandler(async (req, res) => {
   const { username, email, code, phoneNumber, password, confirmPassword } =
     req.body;
@@ -148,6 +149,7 @@ exports.signup = asyncHandler(async (req, res) => {
 });
 
 // Login
+// POST
 exports.login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -182,7 +184,8 @@ exports.login = asyncHandler(async (req, res) => {
     .json({ message: "Logged In Successfully" });
 });
 
-// Profile
+// View Profile
+// GET
 exports.profile = asyncHandler(async (req, res) => {
   const { _id } = req.user;
 
@@ -196,7 +199,8 @@ exports.profile = asyncHandler(async (req, res) => {
   res.status(200).json({ userData });
 });
 
-// Edit
+// Edit Profile
+// PUT
 exports.updateProfile = asyncHandler(async (req, res) => {
   const { _id } = req.user;
   const user = await userModel.findById(_id);
@@ -312,7 +316,8 @@ exports.updateProfile = asyncHandler(async (req, res) => {
   res.status(200).json({ message: "Profile Updated", updateUser });
 });
 
-// Edit
+// Edit Password
+// PUT
 exports.updatePassword = asyncHandler(async (req, res) => {
   const { _id } = req.user;
 

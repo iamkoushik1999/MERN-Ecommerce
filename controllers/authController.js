@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
+const { randomBytes } = require("crypto");
 // Model
 const userModel = require("../models/userModel");
 // Utilities
@@ -13,7 +14,7 @@ const cloudinary = require("../utilities/cloudinary");
 // Sign Up
 exports.signup = asyncHandler(async (req, res) => {
   const { username, email, phoneNumber, password, confirmPassword } = req.body;
-  const image = await cloudinary.uploadFile(req.file);
+  const image = req.file;
 
   if (
     !username ||
@@ -124,14 +125,16 @@ exports.signup = asyncHandler(async (req, res) => {
   }
   // Encrypt Password
   const bcryptPassword = await bcrypt.hash(password, 10);
+  const cloudinaryImage = await cloudinary.uploadFile(req.file);
 
   try {
     const userData = await userModel.create({
+      userId: randomBytes(4).toString("hex"),
       username,
       email,
       phoneNumber,
       password: bcryptPassword,
-      image,
+      image: cloudinaryImage,
     });
 
     res.status(201).json({ message: "User signed up successfully", userData });

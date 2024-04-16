@@ -26,6 +26,7 @@ const userSchema = mongoose.Schema(
     },
     role: {
       type: String,
+      default: "customer",
     },
     approve: {
       type: Boolean,

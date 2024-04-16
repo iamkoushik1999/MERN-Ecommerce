@@ -7,6 +7,7 @@ const {
   updateProfile,
   updatePassword,
   addAddress,
+  editAddress,
 } = require("../controllers/authController");
 // Middleware
 const { isAuth } = require("../middleware/authMiddleware");
@@ -37,5 +38,9 @@ router.route("/profile/update/password").put(isAuth, updatePassword);
 // Add Address
 // POST
 router.route("/profile/update/address").post(isAuth, addAddress);
+
+// Edit Address
+// PUT
+router.route("/profile/update/address/:address_id").put(isAuth, editAddress);
 
 module.exports = router;

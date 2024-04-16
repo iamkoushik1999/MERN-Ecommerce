@@ -425,3 +425,41 @@ exports.addAddress = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
+// Edit Address
+// PUT
+exports.editAddress = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  const { address_id } = req.params;
+  // Cannot change address type
+  const { street, landmark, city, state, zip, country } = req.body;
+  if (!street || !landmark || !city || !state || !zip || !country) {
+    res.status(400);
+    throw new Error("Please fill all fields");
+  }
+
+  try {
+    // Finding the user
+    const user = await userModel.findById(_id);
+    // Finding the address to edit
+    const addressToUpdate = user.address.find((ele) => ele._id == address_id);
+    if (!addressToUpdate) {
+      res.status(404);
+      throw new Error("No address found");
+    }
+    // Updating the changes user gave
+    addressToUpdate.street = street || addressToUpdate.street;
+    addressToUpdate.landmark = landmark || addressToUpdate.landmark;
+    addressToUpdate.city = city || addressToUpdate.city;
+    addressToUpdate.state = state || addressToUpdate.state;
+    addressToUpdate.zip = zip || addressToUpdate.zip;
+    addressToUpdate.country = country || addressToUpdate.country;
+    // Saving the address
+    await user.save();
+
+    res.status(200).json({ message: "Address Updated Successfully", user });
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
+  }
+});

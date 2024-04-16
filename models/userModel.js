@@ -59,10 +59,13 @@ const userSchema = mongoose.Schema(
         street: {
           type: String,
         },
-        state: {
+        landmark: {
           type: String,
         },
         city: {
+          type: String,
+        },
+        state: {
           type: String,
         },
         zip: {

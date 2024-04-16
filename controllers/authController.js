@@ -384,3 +384,44 @@ exports.updatePassword = asyncHandler(async (req, res) => {
 
   res.status(200).json({ message: "Password Updated" });
 });
+
+// Add Address
+// POST
+exports.addAddress = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+
+  const { type, street, landmark, city, state, zip, country } = req.body;
+  if (!type || !street || !landmark || !city || !state || !zip || !country) {
+    res.status(400);
+    throw new Error("Please fill all fields");
+  }
+
+  try {
+    // Find the user
+    const user = await userModel.findById(_id);
+    // Putting all inputs in an object to push it to address array
+    const address = {
+      type,
+      street,
+      landmark,
+      city,
+      state,
+      zip,
+      country,
+    };
+    // Finding if the address type already exists of not
+    const addressExists = user.address.find((ele) => ele.type == type);
+    if (addressExists) {
+      res.status(400);
+      throw new Error(`${type} address already exists`);
+    }
+    // If new address type, Push to address array
+    user.address.push(address);
+    await user.save();
+
+    res.status(200).json({ message: "New Address Added Successfully", user });
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
+  }
+});

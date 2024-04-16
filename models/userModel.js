@@ -13,8 +13,11 @@ const userSchema = mongoose.Schema(
       type: String,
       unique: true,
     },
-    phoneNumber: {
+    code: {
       type: String,
+    },
+    phoneNumber: {
+      type: Number,
       unique: true,
     },
     password: {
@@ -27,10 +30,26 @@ const userSchema = mongoose.Schema(
     role: {
       type: String,
       default: "customer",
+      enum: ["customer", "vendor"],
     },
     approve: {
       type: Boolean,
       default: false,
+    },
+    userInfo: {
+      firstName: {
+        type: String,
+      },
+      lastName: {
+        type: String,
+      },
+      age: {
+        type: Number,
+      },
+      gender: {
+        type: String,
+        enum: ["male", "female"],
+      },
     },
     address: [
       {

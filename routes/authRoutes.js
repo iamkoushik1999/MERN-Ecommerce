@@ -5,6 +5,7 @@ const {
   login,
   profile,
   updateProfile,
+  updatePassword,
 } = require("../controllers/authController");
 // Middleware
 const { isAuth } = require("../middleware/authMiddleware");
@@ -16,5 +17,6 @@ router.route("/signup").post(upload.single("image"), signup);
 router.route("/login").post(login);
 router.route("/profile").get(isAuth, profile);
 router.route("/profile/update").put(isAuth, updateProfile);
+router.route("/profile/update/password").put(isAuth, updatePassword);
 
 module.exports = router;

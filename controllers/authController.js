@@ -311,3 +311,71 @@ exports.updateProfile = asyncHandler(async (req, res) => {
 
   res.status(200).json({ message: "Profile Updated", updateUser });
 });
+
+// Edit
+exports.updatePassword = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+
+  const { oldPassword, newPassword } = req.body;
+  if (!oldPassword || !newPassword) {
+    res.status(400);
+    throw new Error("Please fill all the fields");
+  }
+
+  const user = await userModel.findById(_id).select("password");
+
+  const isMatch = await bcrypt.compare(oldPassword, user.password);
+  if (!isMatch) {
+    res.status(401);
+    throw new Error("Incorrect old password");
+  }
+  // Password Validation
+  if (newPassword) {
+    const minLength = validator.isStrongPassword(newPassword, [
+      { minLength: 6 },
+    ]);
+
+    const minLowercase = validator.isStrongPassword(newPassword, [
+      { minLowercase: 1 },
+    ]);
+
+    const minUppercase = validator.isStrongPassword(newPassword, [
+      { minUppercase: 1 },
+    ]);
+
+    const minNumbers = validator.isStrongPassword(newPassword, [
+      { minNumbers: 1 },
+    ]);
+
+    const minSymbols = validator.isStrongPassword(newPassword, [
+      { minSymbols: 1 },
+    ]);
+
+    if (!minLength) {
+      res.status(400);
+      throw new Error("Password must be minimum of 6 characters");
+    }
+    if (!minLowercase) {
+      res.status(400);
+      throw new Error("Password should contain 1 lower case character");
+    }
+    if (!minUppercase) {
+      res.status(400);
+      throw new Error("Password should contain 1 upper case character");
+    }
+    if (!minNumbers) {
+      res.status(400);
+      throw new Error("Password should contain 1 number");
+    }
+    if (!minSymbols) {
+      res.status(400);
+      throw new Error("Password should contain 1 symbol");
+    }
+  }
+
+  const bcryptNewPassword = await bcrypt.hash(newPassword, 10);
+  user.password = bcryptNewPassword;
+  await user.save();
+
+  res.status(200).json({ message: "Password Updated" });
+});

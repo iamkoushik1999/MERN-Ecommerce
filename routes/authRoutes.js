@@ -12,13 +12,16 @@ const {
 } = require("../controllers/authController");
 // Middleware
 const { isAuth } = require("../middleware/authMiddleware");
-const { upload } = require("../middleware/multerMiddleware");
+// Utilities
+const { upload } = require("../utilities/cloudinary");
 
 // ------------------------------------------------
 
 // Sign Up
 // POST
-router.route("/signup").post(upload.single("image"), signup);
+router
+  .route("/signup")
+  .post(upload.fields([{ name: "image", maxCount: 1 }]), signup);
 
 // Login
 // POST

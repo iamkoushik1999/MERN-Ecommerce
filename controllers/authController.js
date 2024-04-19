@@ -6,8 +6,6 @@ const jwt = require("jsonwebtoken");
 const { randomBytes } = require("crypto");
 // Model
 const userModel = require("../models/userModel");
-// Utilities
-const cloudinary = require("../utilities/cloudinary");
 
 // ------------------------------------------------------------------------------------------------------------
 
@@ -16,7 +14,8 @@ const cloudinary = require("../utilities/cloudinary");
 exports.signup = asyncHandler(async (req, res) => {
   const { username, email, code, phoneNumber, password, confirmPassword } =
     req.body;
-  const image = req.file;
+  const { image } = req.files;
+  const imagePath = image[0].path;
 
   if (
     !username ||
@@ -128,7 +127,6 @@ exports.signup = asyncHandler(async (req, res) => {
   }
   // Encrypt Password
   const bcryptPassword = await bcrypt.hash(password, 10);
-  const cloudinaryImage = await cloudinary.uploadFile(image);
 
   try {
     const userData = await userModel.create({
@@ -138,7 +136,7 @@ exports.signup = asyncHandler(async (req, res) => {
       code,
       phoneNumber,
       password: bcryptPassword,
-      image: cloudinaryImage,
+      image: imagePath,
     });
 
     res.status(201).json({ message: "User signed up successfully", userData });

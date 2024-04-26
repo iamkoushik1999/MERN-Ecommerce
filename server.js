@@ -11,6 +11,7 @@ connectDB();
 // Imports
 const errorHandler = require("./middleware/errorMiddleware");
 const authRoutes = require("./routes/authRoutes");
+const imageRoutes = require("./routes/imageRoutes");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -19,6 +20,9 @@ app.use(cors("*"));
 
 // Middlewares
 app.use("/api/v1", authRoutes);
+app.use("/api/v1", imageRoutes);
+
+// Error Handler
 app.use(errorHandler);
 
 // Test Route

@@ -19,7 +19,6 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "MERN-ecommerce",
-    allowed_formats: ["*"],
   },
 });
 

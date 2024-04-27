@@ -77,11 +77,20 @@ exports.addProduct = asyncHandler(async (req, res) => {
 // GET
 // Get Products
 exports.getProducts = asyncHandler(async (req, res) => {
-  const products = await productModel.find();
+  const query = {
+    ...(req.query.name && { name: req.query.name }),
+    ...(req.query.category && { category: req.query.category }),
+    ...(req.query.brand && { brand: req.query.brand }),
+    ...(req.query.manufacturer && { manufacturer: req.query.manufacturer }),
+    ...(req.query.status && { status: req.query.status }),
+  };
+  const products = await productModel.find({ ...query });
   if (products.length == 0) {
     res.status(404);
     throw new Error("No product found");
   }
 
-  re.status(200).json(products);
+  const totalProducts = await productModel.countDocuments();
+
+  res.status(200).json({ products, totalProducts });
 });

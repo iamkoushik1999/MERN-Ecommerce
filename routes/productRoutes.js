@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 // Controllers
-const { addProduct } = require("../controllers/productCOntroller");
+const { addProduct, getProducts } = require("../controllers/productController");
 // Utilities
 const { upload } = require("../utilities/cloudinary");
 
@@ -18,5 +18,9 @@ router.route("/products/add").post(
   ]),
   addProduct
 );
+
+// GET
+// Get All Posts
+router.route("/products").get(getProducts);
 
 module.exports = router;

@@ -1,4 +1,3 @@
-// imageController
 // Packages
 const asyncHandler = require("express-async-handler");
 // Model
@@ -9,10 +8,14 @@ const imageModel = require("../models/imageModel");
 // Upload Image
 // POST
 exports.uploadImage = asyncHandler(async (req, res) => {
-  try {
-    const { main, thumbnail, front, back } = req.files;
+  const { main, thumbnail, front, back } = req.files;
+  if (!main || !thumbnail || !front || !back) {
+    res.status(400);
+    throw new Error("Select image properly");
+  }
 
-    const newImage = new imageModel({
+  try {
+    const images = await imageModel.create({
       image: {
         main: main[0].path,
         thumbnail: thumbnail[0].path,
@@ -21,10 +24,9 @@ exports.uploadImage = asyncHandler(async (req, res) => {
       },
     });
 
-    await newImage.save();
-    res.status(201).send("Image uploaded successfully.");
+    res.status(201).json({ message: "Image uploaded successfully.", images });
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Server error.");
+    res.status(500);
+    throw new Error("Server error on uploading images");
   }
 });

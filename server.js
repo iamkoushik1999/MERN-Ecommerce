@@ -12,6 +12,7 @@ connectDB();
 const errorHandler = require("./middleware/errorMiddleware");
 const authRoutes = require("./routes/authRoutes");
 const imageRoutes = require("./routes/imageRoutes");
+const productRoutes = require("./routes/productRoutes");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -21,6 +22,7 @@ app.use(cors("*"));
 // Middlewares
 app.use("/api/v1", authRoutes);
 app.use("/api/v1", imageRoutes);
+app.use("/api/v1", productRoutes);
 
 // Error Handler
 app.use(errorHandler);

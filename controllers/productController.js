@@ -122,3 +122,23 @@ exports.editProducts = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
+// DELETE
+// Remove Products
+exports.removeProducts = asyncHandler(async (req, res) => {
+  const { id } = req.query;
+  const product = await productModel.findById(id);
+  if (!product) {
+    res.status(404);
+    throw new Error("No product found");
+  }
+
+  try {
+    await productModel.findByIdAndDelete(id);
+
+    res.status(200).json({ message: "Product deleted successfully" });
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
+  }
+});

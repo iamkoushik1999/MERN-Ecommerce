@@ -5,6 +5,7 @@ const {
   addProduct,
   getProducts,
   editProducts,
+  removeProducts,
 } = require("../controllers/productController");
 // Utilities
 const { upload } = require("../utilities/cloudinary");
@@ -30,5 +31,9 @@ router.route("/products").get(getProducts);
 // PUT
 // Edit Products
 router.route("/products").put(editProducts);
+
+// DELETE
+// Remove Products
+router.route("/products").delete(removeProducts);
 
 module.exports = router;

@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
 // Controllers
-const { addProduct, getProducts } = require("../controllers/productController");
+const {
+  addProduct,
+  getProducts,
+  editProducts,
+} = require("../controllers/productController");
 // Utilities
 const { upload } = require("../utilities/cloudinary");
 
@@ -20,7 +24,11 @@ router.route("/products/add").post(
 );
 
 // GET
-// Get All Posts
+// Get All Products
 router.route("/products").get(getProducts);
+
+// PUT
+// Edit Products
+router.route("/products").put(editProducts);
 
 module.exports = router;

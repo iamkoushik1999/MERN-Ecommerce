@@ -94,3 +94,30 @@ exports.getProducts = asyncHandler(async (req, res) => {
 
   res.status(200).json({ products, totalProducts });
 });
+
+// Edit
+// Edit Products
+exports.editProducts = asyncHandler(async (req, res) => {
+  const { id } = req.query;
+  const product = await productModel.findById(id);
+  if (!product) {
+    res.status(404);
+    throw new Error("No product found");
+  }
+
+  try {
+    const updatedProduct = await productModel
+      .findByIdAndUpdate(id, req.body, {
+        new: true,
+      })
+      .lean();
+
+    res.status(200).json({
+      message: "Product updated successfully",
+      updatedProduct,
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
+  }
+});

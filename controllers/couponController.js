@@ -1,7 +1,7 @@
 // Packages
 const asyncHandler = require("express-async-handler");
 // Models
-const couponModel = require("../mdels/couponModel");
+const couponModel = require("../models/couponModel");
 const productModel = require("../models/productModel");
 
 // ------------------------------------------------------------------

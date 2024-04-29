@@ -13,6 +13,7 @@ const errorHandler = require("./middleware/errorMiddleware");
 const authRoutes = require("./routes/authRoutes");
 const imageRoutes = require("./routes/imageRoutes");
 const productRoutes = require("./routes/productRoutes");
+const couponRoutes = require("./routes/couponRoutes");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -23,6 +24,7 @@ app.use(cors("*"));
 app.use("/api/v1", authRoutes);
 app.use("/api/v1", imageRoutes);
 app.use("/api/v1", productRoutes);
+app.use("/api/v1", couponRoutes);
 
 // Error Handler
 app.use(errorHandler);

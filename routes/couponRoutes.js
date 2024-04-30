@@ -4,6 +4,8 @@ const {
   generateCoupon,
   createCoupon,
   getCoupons,
+  updateCoupon,
+  deleteCoupon,
 } = require("../controllers/couponController");
 const { isAuth } = require("../middleware/authMiddleware");
 
@@ -20,5 +22,13 @@ router.route("/coupons").post(isAuth, createCoupon);
 // GET
 // All Coupon Code
 router.route("/coupons").get(isAuth, getCoupons);
+
+// PUT
+// Edit Coupon Code
+router.route("/coupons").put(isAuth, updateCoupon);
+
+// DELETE
+// Delete Coupon Code
+router.route("/coupons").delete(isAuth, deleteCoupon);
 
 module.exports = router;

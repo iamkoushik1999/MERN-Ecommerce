@@ -141,3 +141,34 @@ exports.getCoupons = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
+// EDIT
+// Update coupon code
+exports.updateCoupon = asyncHandler(async (req, res) => {
+  const id = req.query.id;
+  try {
+    const updatedCoupon = await couponModel.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    res.status(200).json({
+      message: "Coupon updated Successfully",
+      updatedCoupon,
+    });
+  } catch (error) {
+    res.status(400);
+    throw new Error(error);
+  }
+});
+
+// DELETE
+// Delete coupon code
+exports.deleteCoupon = asyncHandler(async (req, res) => {
+  const id = req.query.id;
+  try {
+    await couponModel.findByIdAndDelete(id);
+    res.status(200).json({ message: "Coupon deleted successfully" });
+  } catch (error) {
+    res.status(400);
+    throw new Error(error);
+  }
+});

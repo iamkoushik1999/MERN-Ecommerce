@@ -114,3 +114,30 @@ exports.createCoupon = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
+// GET
+// GET Coupon Codes
+exports.getCoupons = asyncHandler(async (req, res) => {
+  const query = {
+    ...(req.query.id && { _id: req.query.id }),
+    ...(req.query.code && { code: req.query.code }),
+    ...(req.query.type && { type: req.query.type }),
+    ...(req.query.discountPercent && {
+      discountPercent: req.query.discountPercent,
+    }),
+    ...(req.query.discountAmount && {
+      discountAmount: req.query.discountAmount,
+    }),
+    ...(req.query.product && { product: req.query.product }),
+    ...(req.query.startDate && { startDate: req.query.startDate }),
+    ...(req.query.endDate && { endDate: req.query.endDate }),
+    ...(req.query.isActive && { isActive: req.query.isActive }),
+  };
+  try {
+    const coupons = await couponModel.find({ ...query });
+    res.status(200).json(coupons);
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
+  }
+});

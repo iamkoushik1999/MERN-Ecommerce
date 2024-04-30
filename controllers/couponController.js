@@ -97,18 +97,131 @@ exports.createCoupon = asyncHandler(async (req, res) => {
   }
 
   try {
-    const coupon = await couponModel.create({
-      code,
-      type,
-      discountPercent,
-      discountAmount,
-      minimumOrderAmount,
-      product,
-      startDate: startDate ? startDate : Date.now(),
-      endDate,
-      isActive,
-    });
-    res.status(201).json({ message: "Coupon created Successfully", coupon });
+    if (type == "Percentage Discount") {
+      const coupon = await couponModel.create({
+        code,
+        type,
+        discountPercent,
+        startDate: startDate ? startDate : Date.now(),
+        endDate,
+        isActive,
+      });
+      res.status(201).json({ message: "Coupon created Successfully", coupon });
+    }
+    if (type == "Fixed Amount Discount") {
+      const coupon = await couponModel.create({
+        code,
+        type,
+        discountAmount,
+        minimumOrderAmount,
+        startDate: startDate ? startDate : Date.now(),
+        endDate,
+        isActive,
+      });
+      res.status(201).json({ message: "Coupon created Successfully", coupon });
+    }
+    if (type == "Free Shipping") {
+      const coupon = await couponModel.create({
+        code,
+        type,
+        minimumOrderAmount,
+        startDate: startDate ? startDate : Date.now(),
+        endDate,
+        isActive,
+      });
+      res.status(201).json({ message: "Coupon created Successfully", coupon });
+    }
+    if (type == "BOGO") {
+      const coupon = await couponModel.create({
+        code,
+        type,
+        product,
+        startDate: startDate ? startDate : Date.now(),
+        endDate,
+        isActive,
+      });
+      res.status(201).json({ message: "Coupon created Successfully", coupon });
+    }
+    if (type == "First Purchase Discount") {
+      const coupon = await couponModel.create({
+        code,
+        type,
+        discountPercent,
+        startDate: startDate ? startDate : Date.now(),
+        endDate,
+        isActive,
+      });
+      res.status(201).json({ message: "Coupon created Successfully", coupon });
+    }
+    if (type == "Holiday/Seasonal Discounts") {
+      const coupon = await couponModel.create({
+        code,
+        type,
+        discountPercent,
+        startDate: startDate ? startDate : Date.now(),
+        endDate,
+        isActive,
+      });
+      res.status(201).json({ message: "Coupon created Successfully", coupon });
+    }
+    if (type == "Limited Time Offers") {
+      const coupon = await couponModel.create({
+        code,
+        type,
+        discountPercent,
+        startDate: startDate ? startDate : Date.now(),
+        endDate,
+        isActive,
+      });
+      res.status(201).json({ message: "Coupon created Successfully", coupon });
+    }
+    if (type == "Tiered Discounts") {
+      const coupon = await couponModel.create({
+        code,
+        type,
+        discountAmount,
+        minimumOrderAmount,
+        startDate: startDate ? startDate : Date.now(),
+        endDate,
+        isActive,
+      });
+      res.status(201).json({ message: "Coupon created Successfully", coupon });
+    }
+    if (type == "Referral Discounts") {
+      const coupon = await couponModel.create({
+        code,
+        type,
+        discountPercent,
+        startDate: startDate ? startDate : Date.now(),
+        endDate,
+        isActive,
+      });
+      res.status(201).json({ message: "Coupon created Successfully", coupon });
+    }
+    if (type == "Bundle Discounts") {
+      const coupon = await couponModel.create({
+        code,
+        type,
+        discountPercent,
+        product,
+        startDate: startDate ? startDate : Date.now(),
+        endDate,
+        isActive,
+      });
+      res.status(201).json({ message: "Coupon created Successfully", coupon });
+    }
+    // const coupon = await couponModel.create({
+    //   code,
+    //   type,
+    //   discountPercent,
+    //   discountAmount,
+    //   minimumOrderAmount,
+    //   product,
+    //   startDate: startDate ? startDate : Date.now(),
+    //   endDate,
+    //   isActive,
+    // });
+    // res.status(201).json({ message: "Coupon created Successfully", coupon });
   } catch (error) {
     res.status(400);
     throw new Error(error);

@@ -3,8 +3,8 @@ const router = express.Router();
 const {
   generateCoupon,
   createCoupon,
-} = require("../Controllers/couponController");
-const { isAuth } = require("../Middleware/authMiddleware");
+} = require("../controllers/couponController");
+const { isAuth } = require("../middleware/authMiddleware");
 
 // ------------------------------------------------------------------
 

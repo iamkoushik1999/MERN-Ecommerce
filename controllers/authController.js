@@ -169,6 +169,11 @@ exports.login = asyncHandler(async (req, res) => {
     throw new Error("Invalid Credentials");
   }
 
+  if (user.approve == false) {
+    res.status(403);
+    throw new Error("You account is still pending approval");
+  }
+
   const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
     expiresIn: "1d",
   });

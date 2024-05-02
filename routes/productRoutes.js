@@ -9,6 +9,8 @@ const {
 } = require("../controllers/productController");
 // Utilities
 const { upload } = require("../utilities/cloudinary");
+// Middleware
+const { isVendor } = require("../middleware/authMiddleware");
 
 // -------------------------------------------------------------------------
 
@@ -21,19 +23,20 @@ router.route("/products/add").post(
     { name: "front", maxCount: 1 },
     { name: "back", maxCount: 1 },
   ]),
+  isVendor,
   addProduct
 );
 
 // GET
 // Get All Products
-router.route("/products").get(getProducts);
+router.route("/products").get(isVendor, getProducts);
 
 // PUT
 // Edit Products
-router.route("/products").put(editProducts);
+router.route("/products").put(isVendor, editProducts);
 
 // DELETE
 // Remove Products
-router.route("/products").delete(removeProducts);
+router.route("/products").delete(isVendor, removeProducts);
 
 module.exports = router;

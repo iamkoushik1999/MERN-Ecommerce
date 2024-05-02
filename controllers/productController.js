@@ -8,6 +8,7 @@ const productModel = require("../models/productModel");
 // POST
 // Create Product
 exports.addProduct = asyncHandler(async (req, res) => {
+  const vendorId = req.user._id;
   const {
     name,
     description,
@@ -39,6 +40,7 @@ exports.addProduct = asyncHandler(async (req, res) => {
 
   try {
     const product = await productModel.create({
+      vendor: vendorId,
       name,
       description,
       slug: slug,
@@ -77,6 +79,7 @@ exports.addProduct = asyncHandler(async (req, res) => {
 // GET
 // Get Products
 exports.getProducts = asyncHandler(async (req, res) => {
+  const vendorId = req.user._id;
   const query = {
     ...(req.query.id && { _id: req.query.id }),
     ...(req.query.name && { name: req.query.name }),
@@ -85,11 +88,9 @@ exports.getProducts = asyncHandler(async (req, res) => {
     ...(req.query.manufacturer && { manufacturer: req.query.manufacturer }),
     ...(req.query.status && { status: req.query.status }),
   };
-  const products = await productModel.find({ ...query }).lean();
-  if (products.length == 0) {
-    res.status(404);
-    throw new Error("No product found");
-  }
+  const products = await productModel
+    .find({ $and: [{ ...query }, { vendor: vendorId }] })
+    .lean();
 
   const totalProducts = await productModel.countDocuments();
 
@@ -99,16 +100,21 @@ exports.getProducts = asyncHandler(async (req, res) => {
 // Edit
 // Edit Products
 exports.editProducts = asyncHandler(async (req, res) => {
+  const vendorId = req.user._id;
   const { id } = req.query;
-  const product = await productModel.findById(id);
+  const product = await productModel.findOne({
+    $and: [{ _id: id }, { vendor: vendorId }],
+  });
   if (!product) {
     res.status(404);
     throw new Error("No product found");
   }
 
+  const prod_id = product._id;
+
   try {
     const updatedProduct = await productModel
-      .findByIdAndUpdate(id, req.body, {
+      .findByIdAndUpdate(prod_id, req.body, {
         new: true,
       })
       .lean();
@@ -126,15 +132,20 @@ exports.editProducts = asyncHandler(async (req, res) => {
 // DELETE
 // Remove Products
 exports.removeProducts = asyncHandler(async (req, res) => {
+  const vendorId = req.user._id;
   const { id } = req.query;
-  const product = await productModel.findById(id);
+  const product = await productModel.findOne({
+    $and: [{ _id: id }, { vendor: vendorId }],
+  });
   if (!product) {
     res.status(404);
     throw new Error("No product found");
   }
 
+  const prod_id = product._id;
+
   try {
-    await productModel.findByIdAndDelete(id);
+    await productModel.findByIdAndDelete(prod_id);
 
     res.status(200).json({ message: "Product deleted successfully" });
   } catch (error) {

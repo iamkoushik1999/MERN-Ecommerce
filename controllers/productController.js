@@ -6,8 +6,9 @@ const productModel = require("../models/productModel");
 // -------------------------------------------------------------------------
 
 // POST
-// Create Product
+// Create Product -> Vendor
 exports.addProduct = asyncHandler(async (req, res) => {
+  // Vendor Id
   const vendorId = req.user._id;
   const {
     name,
@@ -30,8 +31,17 @@ exports.addProduct = asyncHandler(async (req, res) => {
     throw new Error("Please fill all the fields");
   }
 
+  // Check if product name exists
+  const nameExists = await productModel.findOne({ name: name });
+  if (nameExists) {
+    res.status(400);
+    throw new Error("Product already exists");
+  }
+
+  // Product Slug
   const slug = name.split(" ").join("-").toLowerCase();
 
+  // Checking for all image upload
   const { main, thumbnail, front, back } = req.files;
   if (!main || !thumbnail || !front || !back) {
     res.status(400);
@@ -77,8 +87,9 @@ exports.addProduct = asyncHandler(async (req, res) => {
 });
 
 // GET
-// Get Products
+// Get Products -> Vendor
 exports.getProducts = asyncHandler(async (req, res) => {
+  // Vendor Id
   const vendorId = req.user._id;
   const query = {
     ...(req.query.id && { _id: req.query.id }),
@@ -88,6 +99,7 @@ exports.getProducts = asyncHandler(async (req, res) => {
     ...(req.query.manufacturer && { manufacturer: req.query.manufacturer }),
     ...(req.query.status && { status: req.query.status }),
   };
+  // Products for that Vendor
   const products = await productModel
     .find({ $and: [{ ...query }, { vendor: vendorId }] })
     .lean();
@@ -98,10 +110,11 @@ exports.getProducts = asyncHandler(async (req, res) => {
 });
 
 // Edit
-// Edit Products
+// Edit Products -> Vendor
 exports.editProducts = asyncHandler(async (req, res) => {
   const vendorId = req.user._id;
   const { id } = req.query;
+  // Product for that Vendor
   const product = await productModel.findOne({
     $and: [{ _id: id }, { vendor: vendorId }],
   });
@@ -112,9 +125,28 @@ exports.editProducts = asyncHandler(async (req, res) => {
 
   const prod_id = product._id;
 
+  // Check if product name exists
+  const nameExists = await productModel.findOne({ name: req.body.name });
+  if (nameExists) {
+    res.status(400);
+    throw new Error("Product already exists");
+  }
+
+  // Product Update with image check
+  const { main, thumbnail, front, back } = req.files;
+  const updateObject = Object.assign(
+    {
+      "images.main": main ? main[0].path : main,
+      "images.thumbnail": thumbnail ? thumbnail[0].path : thumbnail,
+      "images.front": front ? front[0].path : front,
+      "images.back": back ? back[0].path : back,
+    },
+    req.body
+  );
+
   try {
     const updatedProduct = await productModel
-      .findByIdAndUpdate(prod_id, req.body, {
+      .findByIdAndUpdate(prod_id, updateObject, {
         new: true,
       })
       .lean();
@@ -130,10 +162,11 @@ exports.editProducts = asyncHandler(async (req, res) => {
 });
 
 // DELETE
-// Remove Products
+// Remove Products -> Vendor
 exports.removeProducts = asyncHandler(async (req, res) => {
   const vendorId = req.user._id;
   const { id } = req.query;
+  // Product for that Vendor
   const product = await productModel.findOne({
     $and: [{ _id: id }, { vendor: vendorId }],
   });

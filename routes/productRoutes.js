@@ -33,7 +33,16 @@ router.route("/products").get(isVendor, getProducts);
 
 // PUT
 // Edit Products
-router.route("/products").put(isVendor, editProducts);
+router.route("/products").put(
+  upload.fields([
+    { name: "main", maxCount: 1 },
+    { name: "thumbnail", maxCount: 1 },
+    { name: "front", maxCount: 1 },
+    { name: "back", maxCount: 1 },
+  ]),
+  isVendor,
+  editProducts
+);
 
 // DELETE
 // Remove Products

@@ -3,9 +3,10 @@ const router = express.Router();
 // Controllers
 const {
   addProduct,
-  getProducts,
+  getVendorProducts,
   editProducts,
   removeProducts,
+  getProducts,
 } = require("../controllers/productController");
 // Utilities
 const { upload } = require("../utilities/cloudinary");
@@ -28,8 +29,8 @@ router.route("/products/add").post(
 );
 
 // GET
-// Get All Products
-router.route("/products").get(isVendor, getProducts);
+// Get Vendor Products
+router.route("/vendor/products").get(isVendor, getVendorProducts);
 
 // PUT
 // Edit Products
@@ -47,5 +48,9 @@ router.route("/products").put(
 // DELETE
 // Remove Products
 router.route("/products").delete(isVendor, removeProducts);
+
+// GET
+// Get All Products
+router.route("/products").get(getProducts);
 
 module.exports = router;

@@ -88,7 +88,7 @@ exports.addProduct = asyncHandler(async (req, res) => {
 
 // GET
 // Get Products -> Vendor
-exports.getProducts = asyncHandler(async (req, res) => {
+exports.getVendorProducts = asyncHandler(async (req, res) => {
   // Vendor Id
   const vendorId = req.user._id;
   const query = {
@@ -185,4 +185,26 @@ exports.removeProducts = asyncHandler(async (req, res) => {
     res.status(500);
     throw new Error(error);
   }
+});
+
+// GET
+// Get Products -> All
+exports.getProducts = asyncHandler(async (req, res) => {
+  const query = {
+    ...(req.query.id && { _id: req.query.id }),
+    ...(req.query.name && { name: req.query.name }),
+    ...(req.query.category && { category: req.query.category }),
+    ...(req.query.brand && { brand: req.query.brand }),
+    ...(req.query.manufacturer && { manufacturer: req.query.manufacturer }),
+    ...(req.query.status && { status: req.query.status }),
+  };
+  // All Products
+  const products = await productModel
+    .find({ ...query })
+    .populate("vendor", "-_id vendorname companyDetails")
+    .lean();
+
+  const totalProducts = await productModel.countDocuments();
+
+  res.status(200).json({ products, totalProducts });
 });

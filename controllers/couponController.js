@@ -8,20 +8,17 @@ const productModel = require("../models/productModel");
 
 // Function to generate random coupon code
 function generateCouponCode() {
-  const characters1 =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const characters1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let code1 = "";
   for (let i = 0; i < 6; i++) {
     code1 += characters1.charAt(Math.floor(Math.random() * characters1.length));
   }
-  const characters2 =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const characters2 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let code2 = "";
   for (let i = 0; i < 6; i++) {
     code2 += characters2.charAt(Math.floor(Math.random() * characters2.length));
   }
-  const characters3 =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const characters3 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let code3 = "";
   for (let i = 0; i < 6; i++) {
     code3 += characters3.charAt(Math.floor(Math.random() * characters3.length));
@@ -45,6 +42,8 @@ exports.generateCoupon = asyncHandler(async (req, res) => {
 // POST
 // Create new coupon
 exports.createCoupon = asyncHandler(async (req, res) => {
+  // Vendor Id
+  const vendorId = req.user._id;
   const {
     code,
     type,
@@ -100,6 +99,7 @@ exports.createCoupon = asyncHandler(async (req, res) => {
     if (type == "Percentage Discount") {
       const coupon = await couponModel.create({
         code,
+        vendor: vendorId,
         type,
         discountPercent,
         startDate: startDate ? startDate : Date.now(),
@@ -111,6 +111,7 @@ exports.createCoupon = asyncHandler(async (req, res) => {
     if (type == "Fixed Amount Discount") {
       const coupon = await couponModel.create({
         code,
+        vendor: vendorId,
         type,
         discountAmount,
         minimumOrderAmount,
@@ -123,6 +124,7 @@ exports.createCoupon = asyncHandler(async (req, res) => {
     if (type == "Free Shipping") {
       const coupon = await couponModel.create({
         code,
+        vendor: vendorId,
         type,
         minimumOrderAmount,
         startDate: startDate ? startDate : Date.now(),
@@ -134,6 +136,7 @@ exports.createCoupon = asyncHandler(async (req, res) => {
     if (type == "BOGO") {
       const coupon = await couponModel.create({
         code,
+        vendor: vendorId,
         type,
         product,
         startDate: startDate ? startDate : Date.now(),
@@ -145,6 +148,7 @@ exports.createCoupon = asyncHandler(async (req, res) => {
     if (type == "First Purchase Discount") {
       const coupon = await couponModel.create({
         code,
+        vendor: vendorId,
         type,
         discountPercent,
         startDate: startDate ? startDate : Date.now(),
@@ -156,6 +160,7 @@ exports.createCoupon = asyncHandler(async (req, res) => {
     if (type == "Holiday/Seasonal Discounts") {
       const coupon = await couponModel.create({
         code,
+        vendor: vendorId,
         type,
         discountPercent,
         startDate: startDate ? startDate : Date.now(),
@@ -167,6 +172,7 @@ exports.createCoupon = asyncHandler(async (req, res) => {
     if (type == "Limited Time Offers") {
       const coupon = await couponModel.create({
         code,
+        vendor: vendorId,
         type,
         discountPercent,
         startDate: startDate ? startDate : Date.now(),
@@ -178,6 +184,7 @@ exports.createCoupon = asyncHandler(async (req, res) => {
     if (type == "Tiered Discounts") {
       const coupon = await couponModel.create({
         code,
+        vendor: vendorId,
         type,
         discountAmount,
         minimumOrderAmount,
@@ -190,6 +197,7 @@ exports.createCoupon = asyncHandler(async (req, res) => {
     if (type == "Referral Discounts") {
       const coupon = await couponModel.create({
         code,
+        vendor: vendorId,
         type,
         discountPercent,
         startDate: startDate ? startDate : Date.now(),
@@ -201,6 +209,7 @@ exports.createCoupon = asyncHandler(async (req, res) => {
     if (type == "Bundle Discounts") {
       const coupon = await couponModel.create({
         code,
+        vendor: vendorId,
         type,
         discountPercent,
         product,
@@ -231,6 +240,8 @@ exports.createCoupon = asyncHandler(async (req, res) => {
 // GET
 // GET Coupon Codes
 exports.getCoupons = asyncHandler(async (req, res) => {
+  // Vendor Id
+  const vendorId = req.user._id;
   const query = {
     ...(req.query.id && { _id: req.query.id }),
     ...(req.query.code && { code: req.query.code }),
@@ -247,7 +258,9 @@ exports.getCoupons = asyncHandler(async (req, res) => {
     ...(req.query.isActive && { isActive: req.query.isActive }),
   };
   try {
-    const coupons = await couponModel.find({ ...query });
+    const coupons = await couponModel.find({
+      $and: [{ ...query }, { vendor: vendorId }],
+    });
     res.status(200).json(coupons);
   } catch (error) {
     res.status(500);
@@ -258,7 +271,18 @@ exports.getCoupons = asyncHandler(async (req, res) => {
 // EDIT
 // Update coupon code
 exports.updateCoupon = asyncHandler(async (req, res) => {
+  // Vendor Id
+  const vendorId = req.user._id;
   const id = req.query.id;
+
+  const coupon = await couponModel.findOne({
+    $and: [{ _id: id }, { vendor: vendorId }],
+  });
+  if (!coupon) {
+    res.status(404);
+    throw new Error("No Coupon Found");
+  }
+
   try {
     const updatedCoupon = await couponModel.findByIdAndUpdate(id, req.body, {
       new: true,
@@ -276,7 +300,24 @@ exports.updateCoupon = asyncHandler(async (req, res) => {
 // DELETE
 // Delete coupon code
 exports.deleteCoupon = asyncHandler(async (req, res) => {
+  // Vendor Id
+  const vendorId = req.user._id;
   const id = req.query.id;
+
+  const coupon = await couponModel.findOne({
+    $and: [{ _id: id }, { vendor: vendorId }],
+  });
+  if (!coupon) {
+    res.status(404);
+    throw new Error("No Coupon Found");
+  }
+
+  // Check Expiration Date
+  if (coupon.endDate && coupon.endDate > Date.now()) {
+    res.status(400);
+    throw new Error("Coupon has not expired yet, You cannot delete it");
+  }
+
   try {
     await couponModel.findByIdAndDelete(id);
     res.status(200).json({ message: "Coupon deleted successfully" });

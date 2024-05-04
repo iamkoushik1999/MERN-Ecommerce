@@ -7,28 +7,28 @@ const {
   updateCoupon,
   deleteCoupon,
 } = require("../controllers/couponController");
-const { isAuth } = require("../middleware/authMiddleware");
+const { isVendor } = require("../middleware/authMiddleware");
 
 // ------------------------------------------------------------------
 
 // GET
 // Generate Coupon
-router.route("/generate").get(isAuth, generateCoupon);
+router.route("/generate").get(isVendor, generateCoupon);
 
 // POST
 // New Coupon Code
-router.route("/coupons").post(isAuth, createCoupon);
+router.route("/coupons").post(isVendor, createCoupon);
 
 // GET
 // All Coupon Code
-router.route("/coupons").get(isAuth, getCoupons);
+router.route("/coupons").get(isVendor, getCoupons);
 
 // PUT
 // Edit Coupon Code
-router.route("/coupons").put(isAuth, updateCoupon);
+router.route("/coupons").put(isVendor, updateCoupon);
 
 // DELETE
 // Delete Coupon Code
-router.route("/coupons").delete(isAuth, deleteCoupon);
+router.route("/coupons").delete(isVendor, deleteCoupon);
 
 module.exports = router;

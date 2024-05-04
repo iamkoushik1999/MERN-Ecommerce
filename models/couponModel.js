@@ -7,6 +7,11 @@ const couponSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    vendor: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Vendor",
+    },
     type: {
       type: String,
       enum: [

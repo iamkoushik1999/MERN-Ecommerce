@@ -7,7 +7,7 @@ const {
   adminProfile,
 } = require("../controllers/adminController");
 // Middleware
-const { isAuth } = require("../middleware/authMiddleware");
+const { isAdmin } = require("../middleware/authMiddleware");
 // Utilities
 const { upload } = require("../utilities/cloudinary");
 
@@ -25,6 +25,6 @@ router.route("/login").post(adminLogin);
 
 // View Profile
 // GET
-router.route("/profile").get(isAuth, adminProfile);
+router.route("/profile").get(isAdmin, adminProfile);
 
 module.exports = router;

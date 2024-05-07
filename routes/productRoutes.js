@@ -11,7 +11,7 @@ const {
 // Utilities
 const { upload } = require("../utilities/cloudinary");
 // Middleware
-const { isVendor } = require("../middleware/authMiddleware");
+const { isAdmin } = require("../middleware/authMiddleware");
 
 // -------------------------------------------------------------------------
 
@@ -24,13 +24,13 @@ router.route("/products/add").post(
     { name: "front", maxCount: 1 },
     { name: "back", maxCount: 1 },
   ]),
-  isVendor,
+  isAdmin,
   addProduct
 );
 
 // GET
 // Get Vendor Products
-router.route("/vendor/products").get(isVendor, getVendorProducts);
+router.route("/vendor/products").get(isAdmin, getVendorProducts);
 
 // PUT
 // Edit Products
@@ -41,13 +41,13 @@ router.route("/products").put(
     { name: "front", maxCount: 1 },
     { name: "back", maxCount: 1 },
   ]),
-  isVendor,
+  isAdmin,
   editProducts
 );
 
 // DELETE
 // Remove Products
-router.route("/products").delete(isVendor, removeProducts);
+router.route("/products").delete(isAdmin, removeProducts);
 
 // GET
 // Get All Products

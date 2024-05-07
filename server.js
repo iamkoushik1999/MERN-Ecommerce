@@ -14,7 +14,6 @@ const authRoutes = require("./routes/authRoutes");
 const imageRoutes = require("./routes/imageRoutes");
 const productRoutes = require("./routes/productRoutes");
 const couponRoutes = require("./routes/couponRoutes");
-const vendorRoutes = require("./routes/vendorRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 
 app.use(express.json());
@@ -27,7 +26,6 @@ app.use("/api/v1", authRoutes);
 app.use("/api/v1", imageRoutes);
 app.use("/api/v1", productRoutes);
 app.use("/api/v1", couponRoutes);
-app.use("/api/v1/vendor", vendorRoutes);
 app.use("/api/v1/admin", adminRoutes);
 
 // Error Handler

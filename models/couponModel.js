@@ -7,11 +7,6 @@ const couponSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    vendor: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "Vendor",
-    },
     type: {
       type: String,
       enum: [
@@ -34,7 +29,16 @@ const couponSchema = new mongoose.Schema(
     discountAmount: {
       type: Number,
     },
-    minimumOrderAmount: {
+    maxDiscountAmount: {
+      type: Number,
+    },
+    minOrderAmount: {
+      type: Number,
+    },
+    buy: {
+      type: Number,
+    },
+    free: {
       type: Number,
     },
     // If coupon is specific to a product

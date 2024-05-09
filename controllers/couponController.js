@@ -120,8 +120,6 @@ exports.createCoupon = asyncHandler(async (req, res) => {
 // GET
 // GET Coupon Codes
 exports.getCoupons = asyncHandler(async (req, res) => {
-  // Vendor Id
-  const vendorId = req.user._id;
   const query = {
     ...(req.query.id && { _id: req.query.id }),
     ...(req.query.code && { code: req.query.code }),
@@ -138,10 +136,9 @@ exports.getCoupons = asyncHandler(async (req, res) => {
     ...(req.query.isActive && { isActive: req.query.isActive }),
   };
   try {
-    const coupons = await couponModel.find({
-      $and: [{ ...query }, { vendor: vendorId }],
-    });
-    res.status(200).json(coupons);
+    const coupons = await couponModel.find({ ...query });
+    const totalCoupons = await couponModel.countDocuments({ ...query });
+    res.status(200).json({ coupons, totalCoupons });
   } catch (error) {
     res.status(500);
     throw new Error(error);

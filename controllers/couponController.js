@@ -148,13 +148,9 @@ exports.getCoupons = asyncHandler(async (req, res) => {
 // EDIT
 // Update coupon code
 exports.updateCoupon = asyncHandler(async (req, res) => {
-  // Vendor Id
-  const vendorId = req.user._id;
   const id = req.query.id;
 
-  const coupon = await couponModel.findOne({
-    $and: [{ _id: id }, { vendor: vendorId }],
-  });
+  const coupon = await couponModel.findOne({ _id: id });
   if (!coupon) {
     res.status(404);
     throw new Error("No Coupon Found");

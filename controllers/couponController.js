@@ -173,22 +173,12 @@ exports.updateCoupon = asyncHandler(async (req, res) => {
 // DELETE
 // Delete coupon code
 exports.deleteCoupon = asyncHandler(async (req, res) => {
-  // Vendor Id
-  const vendorId = req.user._id;
   const id = req.query.id;
 
-  const coupon = await couponModel.findOne({
-    $and: [{ _id: id }, { vendor: vendorId }],
-  });
+  const coupon = await couponModel.findOne({ _id: id });
   if (!coupon) {
     res.status(404);
     throw new Error("No Coupon Found");
-  }
-
-  // Check Expiration Date
-  if (coupon.endDate && coupon.endDate > Date.now()) {
-    res.status(400);
-    throw new Error("Coupon has not expired yet, You cannot delete it");
   }
 
   try {

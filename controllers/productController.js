@@ -8,8 +8,6 @@ const productModel = require("../models/productModel");
 // POST
 // Create Product -> Vendor
 exports.addProduct = asyncHandler(async (req, res) => {
-  // Vendor Id
-  const vendorId = req.user._id;
   const {
     name,
     description,
@@ -50,7 +48,6 @@ exports.addProduct = asyncHandler(async (req, res) => {
 
   try {
     const product = await productModel.create({
-      vendor: vendorId,
       name,
       description,
       slug: slug,

@@ -3,7 +3,7 @@ const router = express.Router();
 // Controllers
 const {
   addProduct,
-  getVendorProducts,
+  getAllProducts,
   editProducts,
   removeProducts,
   getProducts,
@@ -30,7 +30,7 @@ router.route("/products/add").post(
 
 // GET
 // Get Vendor Products
-router.route("/vendor/products").get(isAdmin, getVendorProducts);
+router.route("/vendor/products").get(isAdmin, getAllProducts);
 
 // PUT
 // Edit Products

@@ -6,7 +6,7 @@ const productModel = require("../models/productModel");
 // -------------------------------------------------------------------------
 
 // POST
-// Create Product -> Vendor
+// Create Product
 exports.addProduct = asyncHandler(async (req, res) => {
   const {
     name,
@@ -84,10 +84,8 @@ exports.addProduct = asyncHandler(async (req, res) => {
 });
 
 // GET
-// Get Products -> Vendor
-exports.getVendorProducts = asyncHandler(async (req, res) => {
-  // Vendor Id
-  const vendorId = req.user._id;
+// Get Products
+exports.getAllProducts = asyncHandler(async (req, res) => {
   const query = {
     ...(req.query.id && { _id: req.query.id }),
     ...(req.query.name && { name: req.query.name }),
@@ -96,12 +94,10 @@ exports.getVendorProducts = asyncHandler(async (req, res) => {
     ...(req.query.manufacturer && { manufacturer: req.query.manufacturer }),
     ...(req.query.status && { status: req.query.status }),
   };
-  // Products for that Vendor
-  const products = await productModel
-    .find({ $and: [{ ...query }, { vendor: vendorId }] })
-    .lean();
-
-  const totalProducts = await productModel.countDocuments();
+  // All Products
+  const products = await productModel.find({ ...query }).lean();
+  // Product Count
+  const totalProducts = await productModel.countDocuments({ ...query });
 
   res.status(200).json({ products, totalProducts });
 });

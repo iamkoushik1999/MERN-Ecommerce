@@ -186,12 +186,9 @@ exports.getProducts = asyncHandler(async (req, res) => {
     ...(req.query.status && { status: req.query.status }),
   };
   // All Products
-  const products = await productModel
-    .find({ ...query })
-    .populate("vendor", "-_id vendorname companyDetails")
-    .lean();
-
-  const totalProducts = await productModel.countDocuments();
+  const products = await productModel.find({ ...query }).lean();
+  // Count Products
+  const totalProducts = await productModel.countDocuments({ ...query });
 
   res.status(200).json({ products, totalProducts });
 });

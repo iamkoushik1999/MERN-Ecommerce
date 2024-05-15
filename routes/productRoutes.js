@@ -29,8 +29,8 @@ router.route("/products/add").post(
 );
 
 // GET
-// Get Vendor Products
-router.route("/vendor/products").get(isAdmin, getAllProducts);
+// Get All Products
+router.route("/admin/products").get(isAdmin, getAllProducts);
 
 // PUT
 // Edit Products

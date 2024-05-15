@@ -107,7 +107,7 @@ exports.adminSignup = asyncHandler(async (req, res) => {
   try {
     const data = await adminModel.create({
       adminId: randomBytes(4).toString("hex"),
-      name,
+      admin,
       email,
       code,
       phoneNumber,

@@ -152,14 +152,11 @@ exports.editProducts = asyncHandler(async (req, res) => {
 });
 
 // DELETE
-// Remove Products -> Vendor
+// Remove Products
 exports.removeProducts = asyncHandler(async (req, res) => {
-  const vendorId = req.user._id;
   const { id } = req.query;
-  // Product for that Vendor
-  const product = await productModel.findOne({
-    $and: [{ _id: id }, { vendor: vendorId }],
-  });
+  // Product
+  const product = await productModel.findOne({ _id: id });
   if (!product) {
     res.status(404);
     throw new Error("No product found");

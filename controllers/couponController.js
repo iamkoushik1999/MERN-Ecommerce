@@ -135,17 +135,29 @@ exports.getCoupons = asyncHandler(async (req, res) => {
     ...(req.query.id && { _id: req.query.id }),
     ...(req.query.code && { code: req.query.code }),
     ...(req.query.type && { type: req.query.type }),
-    ...(req.query.discountPercent && {
-      discountPercent: req.query.discountPercent,
-    }),
-    ...(req.query.discountAmount && {
-      discountAmount: req.query.discountAmount,
-    }),
     ...(req.query.product && { product: req.query.product }),
-    ...(req.query.startDate && { startDate: req.query.startDate }),
-    ...(req.query.endDate && { endDate: req.query.endDate }),
     ...(req.query.isActive && { isActive: req.query.isActive }),
   };
+
+  // Handle discountPercent Range
+  if (req.query.discountPercentMin || req.query.discountPercentMax) {
+    query.discountPercent = {};
+    if (req.query.discountPercentMin) {
+      query.discountPercent.$gte = req.query.discountPercentMin;
+    }
+    if (req.query.discountPercentMax) {
+      query.discountPercent.$lte = req.query.discountPercentMax;
+    }
+  }
+
+  // Handle endDate Range
+  if (req.query.filterStartingDate && req.query.filterEndingDate) {
+    query.endDate = {
+      $gte: req.query.filterStartingDate,
+      $lte: req.query.filterEndingDate,
+    };
+  }
+
   try {
     const coupons = await couponModel.find({ ...query });
     const totalCoupons = await couponModel.countDocuments({ ...query });

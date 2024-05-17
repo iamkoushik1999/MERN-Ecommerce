@@ -55,6 +55,7 @@ exports.createCoupon = asyncHandler(async (req, res) => {
     startDate,
     endDate,
     isActive,
+    description,
   } = req.body;
 
   const codeExists = await couponModel.findOne({ code: code });
@@ -77,6 +78,15 @@ exports.createCoupon = asyncHandler(async (req, res) => {
   ) {
     res.status(400);
     throw new Error("Please select correct coupon type");
+  }
+
+  if (maxDiscountAmount && minOrderAmount) {
+    if (maxDiscountAmount >= minOrderAmount) {
+      res.status(400);
+      throw new Error(
+        "Maximum discount amount cannot be higher than minimum order amount"
+      );
+    }
   }
 
   if (discountPercent > 80) {
@@ -106,6 +116,7 @@ exports.createCoupon = asyncHandler(async (req, res) => {
       startDate: startDate ? startDate : Date.now(),
       endDate,
       isActive,
+      description,
     });
     res.status(201).json({
       message: `Coupon for ${type} created Successfully`,

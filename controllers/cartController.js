@@ -117,3 +117,81 @@ exports.viewCart = asyncHandler(async (req, res) => {
     cartTotal: parseFloat(cartTotal.toFixed(2)),
   });
 });
+
+// PUT
+// Update Cart
+exports.updateCart = asyncHandler(async (req, res) => {
+  const user = req.user;
+  const cart = await cartModel.findOne({ user });
+  if (!cart) {
+    res.status(404);
+    throw new Error("No cart found");
+  }
+
+  try {
+    const { product_id, quantity } = req.body;
+    if (cart) {
+      const productIndex = cart.product.findIndex(
+        (prod) => prod.product == product_id
+      );
+      if (productIndex > -1) {
+        let product = cart.product[productIndex];
+        product.quantity += parseInt(quantity);
+        cart.product[productIndex] = product;
+        await cart.save();
+      } else {
+        res.status(404);
+        throw new Error("No cart found");
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Cart updated successfully",
+      cart,
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
+  }
+});
+
+// DELETE
+// Remove Cart Item
+exports.removeCartItem = asyncHandler(async (req, res) => {
+  const userId = req.user;
+
+  const cart = await cartModel.findOne({ user: userId });
+
+  try {
+    await cartModel.updateOne(
+      { user: userId },
+      {
+        $pull: {
+          product: { product: req.params.product_id },
+        },
+      }
+    );
+
+    res.status(200).json({
+      message: "Product Removed",
+    });
+  } catch (error) {
+    res.status(500);
+    throw new Error(error);
+  }
+});
+
+// DELETE
+// Clear Cart
+exports.clearCart = asyncHandler(async (req, res) => {
+  const user = req.user;
+  const cart = await cartModel.findOne({ user });
+  try {
+    await cartModel.findByIdAndDelete(cart._id);
+    res.status(200).json({ message: "Cart cleared successfully" });
+  } catch (error) {
+    res.status(400);
+    throw new Error(error);
+  }
+});

@@ -15,6 +15,7 @@ const imageRoutes = require("./routes/imageRoutes");
 const productRoutes = require("./routes/productRoutes");
 const couponRoutes = require("./routes/couponRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const cartRoutes = require("./routes/cartRoutes");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,6 +28,7 @@ app.use("/api/v1", imageRoutes);
 app.use("/api/v1", productRoutes);
 app.use("/api/v1", couponRoutes);
 app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/cart", cartRoutes);
 
 // Error Handler
 app.use(errorHandler);

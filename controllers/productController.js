@@ -22,7 +22,7 @@ exports.addProduct = asyncHandler(async (req, res) => {
     meta_title,
     meta_keywords,
     meta_description,
-    shipping_charge,
+    shippingCharge,
   } = req.body;
   if (!name || !description || !category || !price || !quantity) {
     res.status(400);
@@ -73,7 +73,7 @@ exports.addProduct = asyncHandler(async (req, res) => {
         meta_description,
       },
       shippingDetails: {
-        shipping_charge,
+        shippingCharge,
       },
     });
 

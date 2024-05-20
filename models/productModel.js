@@ -48,7 +48,7 @@ const productSchema = new mongoose.Schema(
       meta_description: String,
     },
     shippingDetails: {
-      shipping_charge: Number,
+      shippingCharge: Number,
     },
     status: {
       type: Boolean,
